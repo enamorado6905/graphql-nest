@@ -7,6 +7,8 @@ Dockerfile
 /docker-compose.yml
 /documentation/**/**
 
+#GQL
+schema.gql
 
 # compiled output
 /dist
