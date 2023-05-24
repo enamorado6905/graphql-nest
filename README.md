@@ -26,10 +26,18 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+## Installation Dev
+
+````
+Copy ```env.template``` and paste to ```.env```
+````
 
 ```bash
 $ npm install
+```
+
+```bash
+$ docker-compose up -d
 ```
 
 ## Running the app
@@ -57,6 +65,17 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Test API
+```
+localhost:3000/graphql
+```
+
+## Execute Mutation
+````
+Execute __"mutation"__ executeSeed, to populate the 
+database with information
+````
 
 ## Support
 
