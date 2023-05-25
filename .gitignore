@@ -7,6 +7,9 @@ Dockerfile
 /docker-compose.yml
 /documentation/**/**
 
+# DB
+/postgres/*
+
 
 # compiled output
 /dist
