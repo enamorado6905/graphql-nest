@@ -1,20 +1,10 @@
 export abstract class BaseService {
   /**
-   * This action adds a new element
-   * @param createDto
-   * @param authUser
-   * @returns
-   */
-  async create(createDto: any, authUser?: any): Promise<any> {
-    return { ...createDto, authUser };
-  }
-
-  /**
    * This action find all elements in the collection
    * @param searchUserDto
    * @returns
    */
-  async findAll(searchUserDto: any): Promise<any> {
+  async find(searchUserDto: any): Promise<any> {
     return { searchUserDto };
   }
 
@@ -34,6 +24,16 @@ export abstract class BaseService {
    */
   async findOne(filter: object): Promise<any> {
     return filter;
+  }
+
+  /**
+   * This action adds a new element
+   * @param createDto
+   * @param authUser
+   * @returns
+   */
+  async create(createDto: any, authUser?: any): Promise<any> {
+    return { ...createDto, authUser };
   }
 
   /**

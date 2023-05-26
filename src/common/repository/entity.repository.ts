@@ -1,64 +1,181 @@
-export abstract class EntityRepository {
-  public async findOne(
-    entityFilterQuery: any,
-    populateOptions?: any,
-    selectFields?: any,
-  ): Promise<any | null> {
-    return { entityFilterQuery, populateOptions, selectFields };
+import { Repository } from 'typeorm';
+import { PaginateInterface } from '../interfaces/paginated.interface';
+import { WhereInterface } from '../interfaces/sql/where.interface';
+import { SelectInterface } from '../interfaces/sql/select.interface';
+import { InnerJoinInterface } from '../interfaces/sql/innerJoin.interface';
+import { LeftJoinInterface } from '../interfaces/sql/leftJoin.interface';
+
+/**
+ * This method find all entities
+ * @param service
+ * @param limit
+ * @param offset
+ * @param select
+ * @param addSelect
+ * @param where
+ * @param andWhere
+ * @param innerJoin
+ * @param leftJoin
+ * @return
+ */
+export async function find(
+  service: Repository<any>,
+  limit: number,
+  offset: number,
+  select?: SelectInterface,
+  addSelect?: Array<SelectInterface>,
+  where?: Array<WhereInterface>,
+  andWhere?: Array<WhereInterface>,
+  innerJoin?: Array<InnerJoinInterface>,
+  leftJoin?: Array<LeftJoinInterface>,
+): Promise<PaginateInterface> {
+  const queryBuilder = await service
+    .createQueryBuilder()
+    .take(limit)
+    .skip(offset);
+
+  if (select) {
+    queryBuilder.select(select.selection, select.selectionAliasName);
   }
 
-  async find(
-    entityFilterQuery: any,
-    populateOptions?: any,
-    selectFields?: any,
-  ): Promise<any | null> {
-    return { entityFilterQuery, populateOptions, selectFields };
+  if (innerJoin && innerJoin.length > 0) {
+    for (const queryBuilderElement of innerJoin) {
+      queryBuilder.innerJoin(
+        queryBuilderElement.entity,
+        queryBuilderElement.alias,
+        queryBuilderElement.condition,
+      );
+    }
   }
 
-  async findAndSort(
-    entityFilterQuery: any,
-    querySort: any | null,
-    populateOptions?: any,
-    selectFields?: any,
-  ): Promise<any | null> {
-    return { entityFilterQuery, querySort, populateOptions, selectFields };
+  if (leftJoin && leftJoin.length > 0) {
+    for (const queryBuilderElement of leftJoin) {
+      queryBuilder.leftJoin(
+        queryBuilderElement.entity,
+        queryBuilderElement.alias,
+        queryBuilderElement.condition,
+      );
+    }
   }
 
-  async findWithSortAndPagination(
-    entityFilterQuery: any,
-    queryLimit: number | 9,
-    querySkip: number | 1,
-    querySort: any | null,
-    populateOptions?: any,
-    selectFields?: any,
-  ): Promise<any> {
-    return {
-      entityFilterQuery,
-      queryLimit,
-      querySkip,
-      querySort,
-      populateOptions,
-      selectFields,
-    };
+  if (addSelect && addSelect.length > 0) {
+    for (const queryBuilderElement of addSelect) {
+      queryBuilder.addSelect(
+        queryBuilderElement.selection,
+        queryBuilderElement.selectionAliasName,
+      );
+    }
   }
 
-  async create(createEntityData: any): Promise<any> {
-    return { createEntityData };
+  if (where && where.length > 0) {
+    for (const queryBuilderElement of where) {
+      queryBuilder.where(
+        queryBuilderElement.validator,
+        queryBuilderElement.parameters,
+      );
+    }
   }
 
-  async findOneAndUpdate(
-    entityFilterQuery: any,
-    updateEntityData: any,
-    populateOptions?: any,
-  ): Promise<any | null> {
-    return { entityFilterQuery, updateEntityData, populateOptions };
+  if (andWhere && andWhere.length > 0) {
+    for (const queryBuilderElement of andWhere) {
+      queryBuilder.where(
+        queryBuilderElement.validator,
+        queryBuilderElement.parameters,
+      );
+    }
   }
 
-  async deleteMany(entityFilterQuery: any): Promise<any> {
-    return { entityFilterQuery };
-  }
+  return {
+    data: await queryBuilder.getMany(),
+    total: await service.count(),
+    page: limit,
+    perPage: offset,
+  };
+}
 
-  async exists(entityFilterQuery: any): Promise<any> {
-    return { entityFilterQuery };
-  }
+/**
+ * This method find for query
+ * @param service
+ * @param conditions
+ * @returns
+ */
+export async function findOneByOrFail(
+  service: Repository<any>,
+  conditions: object,
+): Promise<any> {
+  return await service.findOneByOrFail(conditions);
+}
+
+/**
+ * This method find for id
+ * @param service
+ * @param id
+ * @returns
+ */
+export async function findOneByIdOrFail(
+  service: Repository<any>,
+  id: string,
+): Promise<any> {
+  return await service.findOneByOrFail({ id });
+}
+
+/**
+ * This method create
+ * @param service
+ * @param docs
+ * @param options
+ * @returns
+ */
+export async function create(
+  service: Repository<any>,
+  docs: object,
+  options?: object,
+): Promise<any> {
+  return await service.save(docs, options);
+}
+
+/**
+ * This method update for id
+ * @param service
+ * @param id
+ * @param updateInput
+ * @param options
+ * @returns
+ */
+export async function findByIdAndUpdate(
+  service: Repository<any>,
+  id: string | object,
+  updateInput: object,
+  options?: object,
+): Promise<any> {
+  const data = await service.preload({
+    ...updateInput,
+    id,
+  });
+
+  return await service.save(data, options);
+}
+
+/**
+ * This method remove for id
+ * @param service
+ * @param id
+ * @returns
+ */
+export async function findByIdAndDelete(
+  service: Repository<any>,
+  id: string,
+): Promise<any> {
+  const item = await service.findOneByOrFail({ id });
+  await service.remove(item);
+  return { ...item, id };
+}
+
+/**
+ * This method return total entity
+ * @param service
+ * @returns
+ */
+export async function count(service: Repository<any>): Promise<number> {
+  return service.count();
 }
