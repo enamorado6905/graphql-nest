@@ -95,7 +95,7 @@ export class CommonService {
    * @param conditions
    * @returns
    */
-  async findOneByOrFail(service: Repository<any>, conditions: object) {
+  async operationFindOneByOrFail(service: Repository<any>, conditions: object) {
     try {
       return await findOneByOrFail(service, conditions);
     } catch (error) {
@@ -106,14 +106,12 @@ export class CommonService {
   /**
    * This function call operation created entity
    * @param service
-   * @param id
    * @param docs
    * @param options
    * @returns
    */
   async operationCreate(
     service: Repository<any>,
-    id: string,
     docs: object,
     options?: object,
   ) {
