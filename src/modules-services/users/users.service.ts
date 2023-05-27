@@ -32,6 +32,10 @@ export class UsersService implements BaseService {
     );
   }
 
+  async findById(id: string): Promise<User> {
+    return await this.commonService.operationFindById(this.usersRepository, id);
+  }
+
   async findOne(filter: object): Promise<User> {
     return await this.commonService.operationFindOneByOrFail(
       this.usersRepository,
