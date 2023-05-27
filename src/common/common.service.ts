@@ -13,7 +13,6 @@ import {
   errorNotAcceptableElement,
   errorNotFound,
 } from './errors/exception-errors';
-import { paginated } from './util/method/algorithms';
 import { SelectInterface } from './interfaces/sql/select.interface';
 import { WhereInterface } from './interfaces/sql/where.interface';
 import { InnerJoinInterface } from './interfaces/sql/innerJoin.interface';
@@ -57,13 +56,12 @@ export class CommonService {
     delete searchDto?.sortDesc;
     delete searchDto?.sortBy;
 
-    let results = await paginated(0, perPage, page);
     page = (page > 0 ? page - 1 : 0) * perPage;
 
-    results = await find(
+    return await find(
       service,
       perPage,
-      0,
+      page,
       select,
       addSelect,
       where,
@@ -71,8 +69,6 @@ export class CommonService {
       innerJoin,
       leftJoin,
     );
-
-    return results;
   }
 
   /**
@@ -95,7 +91,7 @@ export class CommonService {
    * @param conditions
    * @returns
    */
-  async findOneByOrFail(service: Repository<any>, conditions: object) {
+  async operationFindOneByOrFail(service: Repository<any>, conditions: object) {
     try {
       return await findOneByOrFail(service, conditions);
     } catch (error) {
@@ -106,14 +102,12 @@ export class CommonService {
   /**
    * This function call operation created entity
    * @param service
-   * @param id
    * @param docs
    * @param options
    * @returns
    */
   async operationCreate(
     service: Repository<any>,
-    id: string,
     docs: object,
     options?: object,
   ) {

@@ -1,5 +1,3 @@
-import { Repository } from 'typeorm';
-
 export interface InnerJoinInterface {
   entity: any;
   alias: string;
