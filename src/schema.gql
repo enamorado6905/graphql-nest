@@ -2,6 +2,42 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  name: String!
+  email: String!
+  password: String!
+  address: String!
+}
+
 type Query {
   sayHello: String!
+  findUser(perPage: Int = 10, page: Int = 0, sortBy: String, createdAt: DateTime, updatedAt: DateTime, sortDesc: Boolean, noPaginate: Boolean): [User!]!
+  findByIdUser(id: ID!): User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  findOneUser(filter: FindOneUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: ID!): User!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input FindOneUserInput {
+  search: String!
+  value: String!
+}
+
+input UpdateUserInput {
+  id: ID!
 }

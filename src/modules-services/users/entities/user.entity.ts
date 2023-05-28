@@ -18,4 +18,8 @@ export class User extends AbstractEntity {
   @Column()
   @Field(() => String)
   password: string;
+
+  @Column()
+  @Field(() => String)
+  address: string;
 }

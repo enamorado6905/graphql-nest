@@ -1,7 +1,15 @@
-import { IsNotEmpty, IsObject } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
 
+@InputType()
 export class FindOneUserInput {
+  @Field(() => String)
   @IsNotEmpty()
-  @IsObject()
-  search: object;
+  @IsString()
+  search: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  @IsString()
+  value: string;
 }

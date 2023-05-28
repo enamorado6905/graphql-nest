@@ -11,36 +11,38 @@ import { PaginationArgsDto } from '../../common/dto/args/pagination.args.dto';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation('createUser')
-  async create(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
+  @Mutation(() => User, { name: 'createUser' })
+  async create(
+    @Args('createUserInput') createUserInput: CreateUserInput,
+  ): Promise<User> {
+    return await this.usersService.create(createUserInput);
   }
 
-  @Query('users')
+  @Query(() => [User], { name: 'findUser' })
   async findAll(
     @Args() paginationArgsDto: PaginationArgsDto,
   ): Promise<PaginateInterface> {
     return await this.usersService.findAll(paginationArgsDto);
   }
 
-  @Query('user')
+  @Query(() => User, { name: 'findByIdUser' })
   async findById(@Args('id', { type: () => ID }) id: string): Promise<User> {
     return await this.usersService.findById(id);
   }
 
-  @Query('findOneUser')
+  @Mutation(() => User, { name: 'findOneUser' })
   async findOne(@Args('filter') filter: FindOneUserInput): Promise<User> {
     return await this.usersService.findOne(filter);
   }
 
-  @Mutation('updateUser')
+  @Mutation(() => User, { name: 'updateUser' })
   async update(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
   ): Promise<User> {
     return this.usersService.update(updateUserInput.id, updateUserInput);
   }
 
-  @Mutation('removeUser')
+  @Mutation(() => User, { name: 'removeUser' })
   async remove(@Args('id', { type: () => ID }) id: string): Promise<User> {
     return this.usersService.remove(id);
   }
