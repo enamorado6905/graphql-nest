@@ -1,5 +1,4 @@
 import { Repository } from 'typeorm';
-import { PaginateInterface } from '../interfaces/paginated.interface';
 import { WhereInterface } from '../interfaces/sql/where.interface';
 import { SelectInterface } from '../interfaces/sql/select.interface';
 import { InnerJoinInterface } from '../interfaces/sql/innerJoin.interface';
@@ -8,8 +7,8 @@ import { LeftJoinInterface } from '../interfaces/sql/leftJoin.interface';
 /**
  * This method find all entities
  * @param service
- * @param limit
- * @param offset
+ * @param perPage
+ * @param page
  * @param select
  * @param addSelect
  * @param where
@@ -20,19 +19,16 @@ import { LeftJoinInterface } from '../interfaces/sql/leftJoin.interface';
  */
 export async function find(
   service: Repository<any>,
-  limit: number,
-  offset: number,
+  perPage: number,
+  page: number,
   select?: SelectInterface,
   addSelect?: Array<SelectInterface>,
   where?: Array<WhereInterface>,
   andWhere?: Array<WhereInterface>,
   innerJoin?: Array<InnerJoinInterface>,
   leftJoin?: Array<LeftJoinInterface>,
-): Promise<PaginateInterface> {
-  const queryBuilder = await service
-    .createQueryBuilder()
-    .take(limit)
-    .skip(offset);
+): Promise<Array<any>> {
+  const queryBuilder = service.createQueryBuilder().take(perPage).skip(page);
 
   if (select) {
     queryBuilder.select(select.selection, select.selectionAliasName);
@@ -85,12 +81,7 @@ export async function find(
     }
   }
 
-  return {
-    data: await queryBuilder.getMany(),
-    total: await service.count(),
-    page: limit,
-    perPage: offset,
-  };
+  return await queryBuilder.getMany();
 }
 
 /**

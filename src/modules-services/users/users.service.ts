@@ -6,7 +6,6 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommonService } from '../../common/common.service';
-import { PaginateInterface } from '../../common/interfaces/paginated.interface';
 import { PaginationArgsDto } from '../../common/dto/args/pagination.args.dto';
 
 @Injectable()
@@ -23,9 +22,7 @@ export class UsersService implements BaseService {
     );
   }
 
-  async findAll(
-    paginationArgsDto: PaginationArgsDto,
-  ): Promise<PaginateInterface> {
+  async findAll(paginationArgsDto: PaginationArgsDto): Promise<Array<User>> {
     return await this.commonService.operationFind(
       this.usersRepository,
       paginationArgsDto,
@@ -53,5 +50,9 @@ export class UsersService implements BaseService {
 
   async remove(id: string): Promise<User> {
     return await this.commonService.operationDelete(this.usersRepository, id);
+  }
+
+  async count(): Promise<number> {
+    return await this.commonService.operationCount(this.usersRepository);
   }
 }

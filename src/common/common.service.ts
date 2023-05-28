@@ -41,22 +41,14 @@ export class CommonService {
     andWhere?: Array<WhereInterface>,
     innerJoin?: Array<InnerJoinInterface>,
     leftJoin?: Array<LeftJoinInterface>,
-  ) {
+  ): Promise<Array<any>> {
     const sort: any = [];
-    const { perPage, sortBy, sortDesc } = searchDto;
-    let { page } = searchDto;
+    const { perPage, page, sortBy, sortDesc } = searchDto;
 
     if (sortBy) {
       const direction = sortDesc ? 'desc' : 'asc';
       sort.push([sortBy, direction]);
     } else sort.push(['createdAt', 'desc']);
-
-    delete searchDto.page;
-    delete searchDto.perPage;
-    delete searchDto?.sortDesc;
-    delete searchDto?.sortBy;
-
-    page = (page > 0 ? page - 1 : 0) * perPage;
 
     return await find(
       service,
