@@ -1,43 +1,21 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { GqlExceptionFilter } from '@nestjs/graphql';
 
 @Catch()
-export class AllExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(AllExceptionFilter.name);
-
-  async catch(exception: unknown, host: ArgumentsHost) {
-    console.log(exception);
+export class AllExceptionFilter implements GqlExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    if (
+      request.originalUrl &&
+      request.originalUrl.split('/').pop() === 'favicon.ico'
+    ) {
+      return response.status(204);
+    }
 
-    const error: any =
-      exception instanceof HttpException ? exception.getResponse() : exception;
-
-    const name =
-      exception instanceof HttpException ? exception.name : exception;
-
-    this.logger.error(`Status ${status} Error ${JSON.stringify(error)}`);
-
-    const body = {
-      status,
-      name,
-      request,
-      message: error?.message,
-    };
-
-    response.status(status).json(body);
+    return exception;
   }
 }

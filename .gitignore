@@ -6,6 +6,7 @@ env/*
 Dockerfile
 /docker-compose.yml
 /documentation/**/**
+schema.gql
 
 /postgres
 
