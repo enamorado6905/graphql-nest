@@ -11,16 +11,16 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.useStaticAssets(join(__dirname, '../../public'));
+  // app.useStaticAssets(join(__dirname, '../../public'));
   /**
    * global configuration
    */
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE));
   app.useGlobalFilters(new AllExceptionFilter());
   app.useGlobalInterceptors(new TimeOutInterceptor());
-  app.use(json({ limit: '50mb' }));
-  app.use(urlencoded({ extended: true, limit: '50mb' }));
-  app.setGlobalPrefix('api');
+  // app.use(json({ limit: '50mb' }));
+  // app.use(urlencoded({ extended: true, limit: '50mb' }));
+  // app.setGlobalPrefix('api');
 
   app.enableCors();
 
