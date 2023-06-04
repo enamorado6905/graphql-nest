@@ -1,6 +1,6 @@
-export interface PaginateInterface {
+export interface PaginateInterface<T> {
   total: number;
   perPage: number;
   page: number;
-  data?: Array<any>;
+  nodes: T[];
 }

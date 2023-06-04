@@ -17,6 +17,7 @@ import { SelectInterface } from './interfaces/sql/select.interface';
 import { WhereInterface } from './interfaces/sql/where.interface';
 import { InnerJoinInterface } from './interfaces/sql/innerJoin.interface';
 import { LeftJoinInterface } from './interfaces/sql/leftJoin.interface';
+import { PaginateInterface } from './interfaces/paginated.interface';
 
 @Injectable()
 export class CommonService {
@@ -41,26 +42,40 @@ export class CommonService {
     andWhere?: Array<WhereInterface>,
     innerJoin?: Array<InnerJoinInterface>,
     leftJoin?: Array<LeftJoinInterface>,
-  ): Promise<Array<any>> {
-    const sort: any = [];
-    const { perPage, page, sortBy, sortDesc } = searchDto;
+  ): Promise<PaginateInterface<any>> {
+    const { perPage, page } = searchDto;
+    let { sortBy, sortDesc } = searchDto;
 
     if (sortBy) {
-      const direction = sortDesc ? 'desc' : 'asc';
-      sort.push([sortBy, direction]);
-    } else sort.push(['createdAt', 'desc']);
+      sortDesc = sortDesc ? 'DESC' : 'ASC';
+    } else {
+      sortBy = 'updated_at';
+      sortDesc = 'DESC';
+    }
 
-    return await find(
-      service,
-      perPage,
+    const [nodes, total] = await Promise.all([
+      find(
+        service,
+        perPage,
+        page,
+        sortBy,
+        sortDesc,
+        select,
+        addSelect,
+        where,
+        andWhere,
+        innerJoin,
+        leftJoin,
+      ),
+      service.count(),
+    ]);
+
+    return {
       page,
-      select,
-      addSelect,
-      where,
-      andWhere,
-      innerJoin,
-      leftJoin,
-    );
+      perPage,
+      nodes,
+      total,
+    };
   }
 
   /**

@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { FindOneUserInput } from './dto/find-one-user.input';
-import { User } from './entities/user.entity';
+import { PaginatedAuthor, User } from './entities/user.entity';
 import { PaginationArgsDto } from '../../common/dto/args/pagination.args.dto';
 
 @Resolver(() => User)
@@ -22,10 +22,8 @@ export class UsersResolver {
     return await this.usersService.count();
   }
 
-  @Query(() => [User], { name: 'findUser' })
-  async findAll(
-    @Args() paginationArgsDto: PaginationArgsDto,
-  ): Promise<Array<User>> {
+  @Query(() => PaginatedAuthor, { name: 'findUser' })
+  async findAll(@Args() paginationArgsDto: PaginationArgsDto) {
     return await this.usersService.findAll(paginationArgsDto);
   }
 

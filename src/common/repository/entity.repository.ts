@@ -9,6 +9,8 @@ import { LeftJoinInterface } from '../interfaces/sql/leftJoin.interface';
  * @param service
  * @param perPage
  * @param page
+ * @param sortBy
+ * @param sortDesc
  * @param select
  * @param addSelect
  * @param where
@@ -21,6 +23,8 @@ export async function find(
   service: Repository<any>,
   perPage: number,
   page: number,
+  sortBy: string,
+  sortDesc: 'ASC' | 'DESC',
   select?: SelectInterface,
   addSelect?: Array<SelectInterface>,
   where?: Array<WhereInterface>,
@@ -28,7 +32,11 @@ export async function find(
   innerJoin?: Array<InnerJoinInterface>,
   leftJoin?: Array<LeftJoinInterface>,
 ): Promise<Array<any>> {
-  const queryBuilder = service.createQueryBuilder().take(perPage).skip(page);
+  const queryBuilder = service
+    .createQueryBuilder()
+    .take(perPage)
+    .skip(page)
+    .orderBy(sortBy, sortDesc);
 
   if (select) {
     queryBuilder.select(select.selection, select.selectionAliasName);

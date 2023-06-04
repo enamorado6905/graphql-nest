@@ -9,10 +9,17 @@ type User {
   address: String!
 }
 
+type PaginatedAuthor {
+  total: Int
+  perPage: Int
+  page: Int
+  nodes: [User!]
+}
+
 type Query {
   sayHello: String!
   TotalUser: Float!
-  findUser(perPage: Int = 10, page: Int = 0, sortBy: String, createdAt: DateTime, updatedAt: DateTime, sortDesc: Boolean, noPaginate: Boolean): [User!]!
+  findUser(perPage: Int = 10, page: Int = 0, sortBy: String, createdAt: DateTime, updatedAt: DateTime, sortDesc: Boolean, noPaginate: Boolean): PaginatedAuthor!
   findByIdUser(id: ID!): User!
 }
 

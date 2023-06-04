@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { AbstractEntity } from '../../../common/abstract-entity/abstract-entity.entity';
+import { Paginated } from '../../../common/repository/pagination/pagination.entity';
 
 @Entity()
 @ObjectType()
@@ -23,3 +24,6 @@ export class User extends AbstractEntity {
   @Field(() => String)
   address: string;
 }
+
+@ObjectType()
+export class PaginatedAuthor extends Paginated(User) {}

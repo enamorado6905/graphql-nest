@@ -35,13 +35,13 @@ export async function paginated(
   total: number,
   perPage: number,
   page: number,
-): Promise<PaginateInterface> {
+): Promise<PaginateInterface<any>> {
   const [_total, _perPage, _page] = await Promise.all([
     total ? total : 0,
     perPage ? perPage : 10,
     page <= 0 ? 0 : page,
   ]);
-  return { total: _total, perPage: _perPage, page: _page, data: [] };
+  return { total: _total, perPage: _perPage, page: _page, nodes: [] };
 }
 
 export async function bcryptCheckPassword(

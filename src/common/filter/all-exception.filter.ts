@@ -9,12 +9,12 @@ export class AllExceptionFilter implements GqlExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    if (
-      request.originalUrl &&
-      request.originalUrl.split('/').pop() === 'favicon.ico'
-    ) {
-      return response.status(204);
-    }
+    // if (
+    //   request.originalUrl &&
+    //   request.originalUrl.split('/').pop() === 'favicon.ico'
+    // ) {
+    //   return response.status(204);
+    // }
 
     return exception;
   }

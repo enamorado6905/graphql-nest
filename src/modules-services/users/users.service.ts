@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommonService } from '../../common/common.service';
 import { PaginationArgsDto } from '../../common/dto/args/pagination.args.dto';
+import { PaginateInterface } from '../../common/interfaces/paginated.interface';
 
 @Injectable()
 export class UsersService implements BaseService {
@@ -22,7 +23,9 @@ export class UsersService implements BaseService {
     );
   }
 
-  async findAll(paginationArgsDto: PaginationArgsDto): Promise<Array<User>> {
+  async findAll(
+    paginationArgsDto: PaginationArgsDto,
+  ): Promise<PaginateInterface<User>> {
     return await this.commonService.operationFind(
       this.usersRepository,
       paginationArgsDto,

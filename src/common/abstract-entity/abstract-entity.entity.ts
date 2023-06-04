@@ -11,26 +11,26 @@ export class AbstractEntity {
   @Field(() => ID)
   @ApiModelProperty({ description: 'ID of the entity, unique globally.' })
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  readonly id: string;
 
   @Field(() => Date)
   @ApiModelProperty({
     description: 'Date when the entity instance was created.',
   })
   @CreateDateColumn()
-  createdAt: Date;
+  readonly created_at: Date;
 
   @Field(() => Date)
   @ApiModelProperty({
     description: 'Date when the entity instance was last updated.',
   })
   @UpdateDateColumn()
-  updatedAt: Date;
+  readonly updated_at: Date;
 
   @Field(() => Boolean)
   @ApiModelProperty({
     description: 'status when the entity instance was active.',
   })
   @Column({ default: false })
-  status: boolean;
+  readonly status: boolean;
 }
