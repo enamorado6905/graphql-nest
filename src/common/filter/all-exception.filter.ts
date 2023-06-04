@@ -1,5 +1,4 @@
 import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { GqlExceptionFilter } from '@nestjs/graphql';
 
 @Catch()
