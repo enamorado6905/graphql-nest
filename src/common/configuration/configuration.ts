@@ -8,5 +8,10 @@ export default () => ({
     DB_USERNAME: process.env.DB_USERNAME,
     DB_CONNECTION: process.env.DB_CONNECTION,
   },
-  JWT: {},
+  JWT: {
+    AUTH_HASH_ROUNDS: process.env.AUTH_HASH_ROUNDS,
+  },
+  AUTH: {
+    AUTH_HASH_ROUNDS: process.env.DB_CONNECTION,
+  },
 });

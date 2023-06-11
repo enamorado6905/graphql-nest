@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersResolver } from './users.resolver';
-import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommonModule } from '../../common/common.module';
 import { ConfigModule } from '@nestjs/config';
+import { CommonModule } from '../../common/common.module';
+import { User } from './entities/user.entity';
+import { UsersResolver } from './users.resolver';
+import { UsersService } from './users.service';
+import { UsersSubscriber } from './users.subscriber';
 
 @Module({
-  providers: [UsersResolver, UsersService],
+  providers: [UsersSubscriber, UsersResolver, UsersService],
   imports: [CommonModule, TypeOrmModule.forFeature([User]), ConfigModule],
   exports: [TypeOrmModule],
 })

@@ -8,4 +8,13 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
   @Field(() => ID)
   @IsUUID()
   id: string;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => String, { nullable: true })
+  address?: string;
 }
