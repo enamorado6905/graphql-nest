@@ -41,7 +41,7 @@ export async function paginated(
     perPage ? perPage : 10,
     page <= 0 ? 0 : page,
   ]);
-  return { total: _total, perPage: _perPage, page: _page, nodes: [] };
+  return { total: _total, per_page: _perPage, page: _page, nodes: [] };
 }
 
 export async function bcryptCheckPassword(

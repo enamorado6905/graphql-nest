@@ -9,7 +9,7 @@ export function Paginated<T>(classRef: Type<T>): Type<PaginateInterface<T>> {
     total: number;
 
     @Field(() => Int, { nullable: true })
-    perPage: number;
+    per_page: number;
 
     @Field(() => Int, { nullable: true })
     page: number;

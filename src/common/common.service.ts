@@ -72,7 +72,7 @@ export class CommonService {
 
     return {
       page,
-      perPage,
+      per_page: perPage,
       nodes,
       total,
     };
