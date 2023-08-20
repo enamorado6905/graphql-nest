@@ -9,7 +9,7 @@ export class PaginationArgsDto {
   @Transform(({ value }) => toNumber(value, { default: 10, min: 10 }))
   @IsOptional()
   @IsNumber()
-  readonly perPage?: number = 10;
+  readonly per_page?: number = 10;
 
   @Field(() => Int, { nullable: true })
   @Transform(({ value }) => toNumber(value, { default: 0, min: 0 }))
@@ -20,23 +20,23 @@ export class PaginationArgsDto {
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
-  sortBy?: string;
+  sort_by?: string;
 
   @Field(() => Date, { nullable: true })
   @IsOptional()
-  createdAt?: any;
+  created_at?: any;
 
   @Field(() => Date, { nullable: true })
   @IsOptional()
-  updatedAt?: any;
+  updated_at?: any;
 
   @Field(() => Boolean, { nullable: true })
   @IsBoolean()
   @IsOptional()
-  sortDesc?: boolean;
+  sort_desc?: boolean;
 
   @Field(() => Boolean, { nullable: true })
   @IsBoolean()
   @IsOptional()
-  noPaginate?: boolean;
+  no_paginate?: boolean;
 }
