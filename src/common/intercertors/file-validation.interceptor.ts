@@ -4,7 +4,8 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
-import { errorBadRequest } from '../errors/exception-errors';
+import { errorExceptions } from '../errors/exception-errors';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 
 @Injectable()
 export class FileSizeValidationPipe implements PipeTransform {
@@ -15,7 +16,10 @@ export class FileSizeValidationPipe implements PipeTransform {
     }
 
     if (file.size > 3000000000000000) {
-      return errorBadRequest('Validation failed size');
+      errorExceptions(
+        ApolloServerErrorCode.PERSISTED_QUERY_NOT_FOUND,
+        'Validation failed size',
+      );
     }
 
     if (
@@ -23,7 +27,10 @@ export class FileSizeValidationPipe implements PipeTransform {
       file.mimetype !== 'image/jpeg' &&
       file.mimetype !== 'image/png'
     ) {
-      return errorBadRequest('Validation failed type');
+      errorExceptions(
+        ApolloServerErrorCode.PERSISTED_QUERY_NOT_FOUND,
+        'Validation failed type',
+      );
     }
 
     return file;

@@ -1,4 +1,3 @@
-import { PaginateInterface } from '../../interfaces/paginated.interface';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { GraphQLError } from 'graphql/error';
 
