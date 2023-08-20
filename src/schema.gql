@@ -3,14 +3,23 @@
 # ------------------------------------------------------
 
 type User {
+  id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+  status: Boolean!
   name: String!
   email: String!
   address: String!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type PaginatedAuthor {
   total: Int
-  perPage: Int
+  per_page: Int
   page: Int
   nodes: [User!]
 }
@@ -18,14 +27,9 @@ type PaginatedAuthor {
 type Query {
   sayHello: String!
   TotalUser: Float!
-  findUser(perPage: Int = 10, page: Int = 0, sortBy: String, createdAt: DateTime, updatedAt: DateTime, sortDesc: Boolean, noPaginate: Boolean): PaginatedAuthor!
+  findUser(per_page: Int = 10, page: Int = 0, sort_by: String, created_at: DateTime, updated_at: DateTime, sort_desc: String! = "DESC", is_paginate: Boolean! = true): PaginatedAuthor!
   findByIdUser(id: ID!): User!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!

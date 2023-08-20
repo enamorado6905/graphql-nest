@@ -2,6 +2,7 @@ import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { toNumber } from '../../helpers/cast.helper';
+import { SortDescEnum } from '../../enum/sort.enum';
 
 @ArgsType()
 export class PaginationArgsDto {
@@ -30,13 +31,13 @@ export class PaginationArgsDto {
   @IsOptional()
   updated_at?: any;
 
-  @Field(() => Boolean, { nullable: true })
-  @IsBoolean()
+  @Field(() => String, { defaultValue: SortDescEnum.DESC })
+  @IsString()
   @IsOptional()
-  sort_desc?: boolean;
+  sort_desc?: SortDescEnum.DESC | SortDescEnum.ASC;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean, { defaultValue: true })
   @IsBoolean()
   @IsOptional()
-  no_paginate?: boolean;
+  is_paginate?: boolean;
 }

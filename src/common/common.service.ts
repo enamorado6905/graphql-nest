@@ -9,15 +9,15 @@ import {
   findOneByIdOrFail,
   findOneByOrFail,
 } from './repository/entity.repository';
-import {
-  errorNotAcceptableElement,
-  errorNotFound,
-} from './errors/exception-errors';
 import { SelectInterface } from './interfaces/sql/select.interface';
 import { WhereInterface } from './interfaces/sql/where.interface';
 import { InnerJoinInterface } from './interfaces/sql/innerJoin.interface';
 import { LeftJoinInterface } from './interfaces/sql/leftJoin.interface';
-import { PaginateInterface } from './interfaces/paginated.interface';
+import { SortDescEnum, SortEnum } from './enum/sort.enum';
+import { PaginationArgsDto } from './dto/args/pagination.args.dto';
+import { PaginationClass } from './util/class/pagination.class';
+import { errorExceptions } from './errors/exception-errors';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 
 @Injectable()
 export class CommonService {
@@ -35,47 +35,46 @@ export class CommonService {
    */
   async operationFind(
     service: Repository<any>,
-    searchDto: any,
+    searchDto: PaginationArgsDto,
     select?: SelectInterface,
     addSelect?: Array<SelectInterface>,
     where?: Array<WhereInterface>,
     andWhere?: Array<WhereInterface>,
     innerJoin?: Array<InnerJoinInterface>,
     leftJoin?: Array<LeftJoinInterface>,
-  ): Promise<PaginateInterface<any>> {
-    const { perPage, page } = searchDto;
-    let { sortBy, sortDesc } = searchDto;
+  ) {
+    try {
+      const { per_page, page, is_paginate } = searchDto;
+      let { sort_by, sort_desc } = searchDto;
 
-    if (sortBy) {
-      sortDesc = sortDesc ? 'DESC' : 'ASC';
-    } else {
-      sortBy = 'updated_at';
-      sortDesc = 'DESC';
+      sort_by = sort_by ? sort_by : SortEnum.CREATED_AT;
+      sort_desc = sort_desc ? sort_desc : SortDescEnum.ASC;
+
+      const [nodes, total] = await Promise.all([
+        find(
+          service,
+          is_paginate,
+          per_page,
+          page,
+          sort_by,
+          sort_desc,
+          select,
+          addSelect,
+          where,
+          andWhere,
+          innerJoin,
+          leftJoin,
+        ),
+        service.count(),
+      ]);
+      const paginated = new PaginationClass(page, per_page, nodes, total);
+      return paginated.paginated();
+    } catch (error) {
+      errorExceptions(
+        ApolloServerErrorCode.PERSISTED_QUERY_NOT_FOUND,
+        error.message,
+      );
     }
-
-    const [nodes, total] = await Promise.all([
-      find(
-        service,
-        perPage,
-        page,
-        sortBy,
-        sortDesc,
-        select,
-        addSelect,
-        where,
-        andWhere,
-        innerJoin,
-        leftJoin,
-      ),
-      service.count(),
-    ]);
-
-    return {
-      page,
-      per_page: perPage,
-      nodes,
-      total,
-    };
   }
 
   /**
@@ -88,7 +87,10 @@ export class CommonService {
     try {
       return await findOneByIdOrFail(service, id);
     } catch (error) {
-      errorNotFound(error.message);
+      errorExceptions(
+        ApolloServerErrorCode.PERSISTED_QUERY_NOT_FOUND,
+        error.message,
+      );
     }
   }
 
@@ -102,7 +104,10 @@ export class CommonService {
     try {
       return await findOneByOrFail(service, conditions);
     } catch (error) {
-      errorNotFound(error.message);
+      errorExceptions(
+        ApolloServerErrorCode.PERSISTED_QUERY_NOT_FOUND,
+        error.message,
+      );
     }
   }
 
@@ -121,7 +126,7 @@ export class CommonService {
     try {
       return await create(service, docs, options);
     } catch (error) {
-      errorNotAcceptableElement(error);
+      errorExceptions(ApolloServerErrorCode.BAD_REQUEST, error.message);
     }
   }
 
@@ -142,7 +147,7 @@ export class CommonService {
     try {
       return await findByIdAndUpdate(service, id, docs, queryOptions);
     } catch (error) {
-      errorNotAcceptableElement(error);
+      errorExceptions(ApolloServerErrorCode.BAD_REQUEST, error.message);
     }
   }
 
@@ -156,7 +161,7 @@ export class CommonService {
     try {
       return await findByIdAndDelete(service, id);
     } catch (error) {
-      errorNotAcceptableElement(error);
+      errorExceptions(ApolloServerErrorCode.BAD_REQUEST, error.message);
     }
   }
 
@@ -169,7 +174,10 @@ export class CommonService {
     try {
       return await count(service);
     } catch (error) {
-      errorNotAcceptableElement(error);
+      errorExceptions(
+        ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
+        error.message,
+      );
     }
   }
 }

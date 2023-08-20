@@ -6,13 +6,13 @@ export function Paginated<T>(classRef: Type<T>): Type<PaginateInterface<T>> {
   @ObjectType({ isAbstract: true })
   abstract class PaginatedType implements PaginateInterface<T> {
     @Field(() => Int, { nullable: true })
-    total: number;
+    total?: number;
 
     @Field(() => Int, { nullable: true })
-    per_page: number;
+    per_page?: number;
 
     @Field(() => Int, { nullable: true })
-    page: number;
+    page?: number;
 
     @Field(() => [classRef], { nullable: true })
     nodes: T[];

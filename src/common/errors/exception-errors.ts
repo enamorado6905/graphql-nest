@@ -20,53 +20,19 @@ import {
   UnprocessableEntityException,
   UnsupportedMediaTypeException,
 } from '@nestjs/common';
+import { GraphQLError } from 'graphql/error';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { ExceptionClass } from '../util/class/exception.class';
 
 /**
  * This function catch all exceptions
  */
-export function errorAllException(error: any) {
-  switch (error.exception) {
-    case 'ConflictException':
-      throw new ConflictException(error.response.message);
-    case 'UnprocessableEntityException':
-      throw new UnprocessableEntityException(error.response.message);
-    case 'BadRequestException':
-      throw new BadRequestException(error.response.message);
-    case 'UnauthorizedException':
-      throw new UnauthorizedException(error.response.message);
-    case 'NotFoundException':
-      throw new NotFoundException(error.response.message);
-    case 'ForbiddenException':
-      throw new ForbiddenException(error.response.message);
-    case 'NotAcceptableException':
-      throw new NotAcceptableException(error.response.message);
-    case 'RequestTimeoutException':
-      throw new RequestTimeoutException(error.response.message);
-    case 'GoneException':
-      throw new GoneException(error.response.message);
-    case 'HttpVersionNotSupportedException':
-      throw new HttpVersionNotSupportedException(error.response.message);
-    case 'UnsupportedMediaTypeException':
-      throw new UnsupportedMediaTypeException(error.response.message);
-    case 'InternalServerErrorException':
-      throw new InternalServerErrorException(error.response.message);
-    case 'NotImplementedException':
-      throw new NotImplementedException(error.response.message);
-    case 'ImATeapotException':
-      throw new ImATeapotException(error.response.message);
-    case 'MethodNotAllowedException':
-      throw new MethodNotAllowedException(error.response.message);
-    case 'BadGatewayException':
-      throw new BadGatewayException(error.response.message);
-    case 'ServiceUnavailableException':
-      throw new ServiceUnavailableException(error.response.message);
-    case 'GatewayTimeoutException':
-      throw new GatewayTimeoutException(error.response.message);
-    case 'PreconditionFailedException':
-      throw new PreconditionFailedException(error.response.message);
-    case 'PayloadTooLargeException':
-      throw new PayloadTooLargeException();
-  }
+export function errorExceptions(
+  errorCode: ApolloServerErrorCode,
+  message: any,
+) {
+  const exceptionClass = new ExceptionClass(errorCode, message);
+  return exceptionClass.exceptionServerError();
 }
 
 /**
@@ -92,7 +58,12 @@ export function errorNotFoundElement(id: string) {
  * @param message
  */
 export function errorNotFound(message: string) {
-  throw new NotFoundException(message);
+  throw new GraphQLError(message, {
+    extensions: {
+      code: 'PERSISTED_QUERY_NOT_FOUND',
+    },
+  });
+  // throw new NotFoundException(message);
 }
 
 /**

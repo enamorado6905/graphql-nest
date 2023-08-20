@@ -7,6 +7,7 @@ import { LeftJoinInterface } from '../interfaces/sql/leftJoin.interface';
 /**
  * This method find all entities
  * @param service
+ * @param isPaginate
  * @param perPage
  * @param page
  * @param sortBy
@@ -21,6 +22,7 @@ import { LeftJoinInterface } from '../interfaces/sql/leftJoin.interface';
  */
 export async function find(
   service: Repository<any>,
+  isPaginate: boolean,
   perPage: number,
   page: number,
   sortBy: string,
@@ -32,11 +34,11 @@ export async function find(
   innerJoin?: Array<InnerJoinInterface>,
   leftJoin?: Array<LeftJoinInterface>,
 ): Promise<Array<any>> {
-  const queryBuilder = service
-    .createQueryBuilder()
-    .take(perPage)
-    .skip(page)
-    .orderBy(sortBy, sortDesc);
+  const queryBuilder = service.createQueryBuilder().orderBy(sortBy, sortDesc);
+
+  if (isPaginate) {
+    queryBuilder.take(perPage).skip(page);
+  }
 
   if (select) {
     queryBuilder.select(select.selection, select.selectionAliasName);

@@ -1,12 +1,15 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Field, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
+@Entity()
+@ObjectType()
 export class AbstractEntity {
   @Field(() => ID)
   @ApiModelProperty({ description: 'ID of the entity, unique globally.' })
