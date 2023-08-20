@@ -70,7 +70,7 @@ $ npm run test:cov
 
 ## Test API
 ```
-localhost:3000/graphql
+localhost:4040/graphql
 ```
 
 ## Execute Mutation
