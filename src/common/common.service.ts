@@ -71,7 +71,7 @@ export class CommonService {
       return paginated.paginated();
     } catch (error) {
       errorExceptions(
-        ApolloServerErrorCode.PERSISTED_QUERY_NOT_FOUND,
+        ApolloServerErrorCode.PERSISTED_QUERY_NOT_SUPPORTED,
         error.message,
       );
     }
