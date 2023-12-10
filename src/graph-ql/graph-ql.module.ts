@@ -7,6 +7,7 @@ import { GraphQlResolver } from './graph-ql.resolver';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { FORMATTED_ERROR } from '../common/util/constants/constants.conts';
 import { EnvEnum } from '../common/enum/env.enum';
+import { ExceptionClass } from '../common/util/class/exception.class';
 
 @Module({
   imports: [
@@ -15,7 +16,6 @@ import { EnvEnum } from '../common/enum/env.enum';
       playground: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      status400ForVariableCoercionErrors: true,
       formatError: (formattedError) => {
         if (process.env.NODE_ENV === EnvEnum.PRODUCTION) {
           delete formattedError.extensions.stacktrace;
